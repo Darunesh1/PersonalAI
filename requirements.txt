@@ -1,0 +1,5 @@
+comtypes==1.4.8
+PyAudio==0.2.14
+pyttsx3==2.98
+SpeechRecognition==3.13.0
+typing_extensions==4.12.2
