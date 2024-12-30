@@ -7,6 +7,7 @@ from decouple import config
 
 EMAIL=""
 PASSWORD=""
+NEWS=config("NEWS_API_KEY")
 
 
 def find_my_ip():
@@ -45,3 +46,13 @@ def send_email(receiver, subject, message):
     except Exception as e:
         print(e)
         return False
+    
+def get_news():
+    news_headlines = []
+    url = f"https://newsapi.org/v2/top-headlines?country=in&apiKey=a786fe7ae43e4bb7b2f314d2337dbea7"
+    result = requests.get(url).json()
+    
+    articles = result["articles"]
+    for article in articles:
+        news_headlines.append(article["title"])
+    return news_headlines[:4]

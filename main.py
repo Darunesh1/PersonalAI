@@ -8,7 +8,7 @@ import keyboard
 import os
 import subprocess as sp
 
-from online import find_my_ip, search_on_google, search_on_wikipedia, send_email, youtube
+from online import find_my_ip, get_news, search_on_google, search_on_wikipedia, send_email, youtube
 
 engine = pyttsx3.init("sapi5")
 
@@ -176,6 +176,14 @@ while True:
                 else:
                     speak("Email could not be sent. Please check your credentials.")
                     print("Email could not be sent. Please check your credentials.")
+                    
+            elif "news" in task:
+                news_headlines = get_news()
+                speak("Here are the top news headlines:")
+                speak("\n".join(news_headlines))
+                with open("news_headlines.txt", "w", encoding="utf-8") as file:
+                    file.write("Top News Headlines:\n")
+                    file.write("\n".join(news_headlines))
             
             elif "ip" in task:
                 print("Your IP address is:", find_my_ip())
