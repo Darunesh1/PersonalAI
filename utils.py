@@ -4,15 +4,27 @@ import pywhatkit as kit
 from email.message import EmailMessage
 import smtplib
 from decouple import config
+from conv import EMAIL, IP_URL, NEWS, NEWS_URL, PASSWORD, SMTP_PORT, SMTP_URL, WEATHER, WEATHER_URL
+import gtts
+from pydub import AudioSegment
+from pydub.playback import play
+import os
 
-EMAIL=""
-PASSWORD=""
-NEWS=config("NEWS")
-WEATHER=config("WEATHER")
+
+
+def speak(text):
+    tts = gtts.gTTS(text=text, lang='en')
+    tts.save("audio.mp3")
+    
+    audio = AudioSegment.from_mp3("audio.mp3")
+    os.remove("audio.mp3")
+    audio=audio.speedup(playback_speed=1.5)
+    
+    play(audio)
 
 
 def find_my_ip():
-    ip_address = requests.get('https://api.ipify.org?format=json').json()
+    ip_address = requests.get(IP_URL).json()
     return ip_address["ip"]
 
 def search_on_wikipedia(query):
@@ -38,7 +50,7 @@ def send_email(receiver, subject, message):
         email['From']=EMAIL
         
         email.set_content(message)
-        server=smtplib.SMTP('smtp.gmail.com',587)
+        server=smtplib.SMTP(SMTP_URL,SMTP_PORT)
         server.starttls()
         server.login(EMAIL, PASSWORD)
         server.send_message(email)
@@ -50,9 +62,17 @@ def send_email(receiver, subject, message):
     
 def get_news():
     news_headlines = []
-    url = f"https://newsdata.io/api/1/latest?apikey={NEWS}&q=business&country=in&category=technology"
+    url = NEWS_URL
     try:
-        result = requests.get(url).json() 
+        result = requests.get(
+            url,
+            params={
+                "apiKey": NEWS,
+                "q": "business",
+                "country": "in",
+                "category": "technology"
+            }
+        ).json() 
         articles = result["results"]
         for article in articles:
             news_headlines.append(article["title"])
@@ -63,9 +83,15 @@ def get_news():
 
 
 def weather_forecast(city):
-    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER}"
+    url = WEATHER_URL
     try:
-        result = requests.get(url).json()
+        result = requests.get(
+            url,
+            params={
+                "appid": WEATHER,
+                "q": city,
+            }
+        ).json()
         weather = result["weather"][0]["main"]
         temperature = result["main"]["temp"]
         feels_like = result["main"]["feels_like"]

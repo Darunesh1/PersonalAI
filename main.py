@@ -3,7 +3,7 @@ from datetime import datetime
 from decouple import config
 import requests
 import wolframalpha
-from conv import random_text, farewell_text
+from conv import APP_ID, random_text, farewell_text
 import speech_recognition as sr
 from random import choice
 import keyboard
@@ -238,7 +238,7 @@ while True:
                     speak(f"Sorry, I couldn't find any movie titled {text}.")
                     
             elif "calculate" in task:
-                app_id=config("APP_ID")
+                app_id=config(APP_ID)
                 client = wolframalpha.Client(app_id)
                 ind=task.lower().split().index('calculate')
                 text=task.split()[ind+1:]
@@ -252,7 +252,7 @@ while True:
                     speak("please try again")
                     
             elif "what is" in task or "who is" in task or "where is" in task:
-                app_id = config("APP_ID")
+                app_id = config(APP_ID)
                 client = wolframalpha.Client(app_id)
 
                 try:
