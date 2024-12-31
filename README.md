@@ -1,3 +1,5 @@
+**Note**: This is an experimental version. You can use it if you'd like, but a stable version is available in the main branch.
+
 # Personal AI Assistant
 
 ## Overview
