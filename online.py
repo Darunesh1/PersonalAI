@@ -7,7 +7,8 @@ from decouple import config
 
 EMAIL=""
 PASSWORD=""
-NEWS=config("NEWS_API_KEY")
+NEWS=config("NEWS")
+WEATHER=config("WEATHER")
 
 
 def find_my_ip():
@@ -49,10 +50,26 @@ def send_email(receiver, subject, message):
     
 def get_news():
     news_headlines = []
-    url = f"https://newsapi.org/v2/top-headlines?country=in&apiKey=a786fe7ae43e4bb7b2f314d2337dbea7"
-    result = requests.get(url).json()
-    
-    articles = result["articles"]
-    for article in articles:
-        news_headlines.append(article["title"])
-    return news_headlines[:4]
+    url = f"https://newsdata.io/api/1/latest?apikey={NEWS}&q=business&country=in&category=technology"
+    try:
+        result = requests.get(url).json() 
+        articles = result["results"]
+        for article in articles:
+            news_headlines.append(article["title"])
+        return news_headlines[:4]
+    except Exception as e:
+        print(e)
+        return news_headlines
+
+
+def weather_forecast(city):
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER}"
+    try:
+        result = requests.get(url).json()
+        weather = result["weather"][0]["main"]
+        temperature = result["main"]["temp"]
+        feels_like = result["main"]["feels_like"]
+        return weather, f"{temperature}°C", f"{feels_like}°C"
+    except Exception as e:
+        print(e)
+        return None, None, None

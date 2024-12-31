@@ -1,14 +1,17 @@
 import pyttsx3
 from datetime import datetime
 from decouple import config
+import requests
+import wolframalpha
 from conv import random_text, farewell_text
 import speech_recognition as sr
 from random import choice
 import keyboard
 import os
 import subprocess as sp
+import imdb
 
-from online import find_my_ip, get_news, search_on_google, search_on_wikipedia, send_email, youtube
+from online import find_my_ip, get_news, search_on_google, search_on_wikipedia, send_email, weather_forecast, youtube
 
 engine = pyttsx3.init("sapi5")
 
@@ -184,6 +187,99 @@ while True:
                 with open("news_headlines.txt", "w", encoding="utf-8") as file:
                     file.write("Top News Headlines:\n")
                     file.write("\n".join(news_headlines))
+                    
+            
+                    
+            elif "weather" in task:
+                speak("What is the city name?")
+                if "my" in task:
+                    
+                    ip_address = find_my_ip()
+                    city=requests.get(f"https://ipapi.co/{ip_address}/city").text
+                else:                    
+                    city = take_command()
+                
+                speak(f"Fetching weather forecast for {city}")
+                weather, temperature, feels_like = weather_forecast(city)
+                speak(f"The weather is {weather} and the temperature is {temperature} and the feels like {feels_like}")
+                with open("weather_forecast.txt", "w", encoding="utf-8") as file:
+                    file.write(f"Weather forecast for {city}:\n")
+                    file.write(f"The weather is {weather} and the temperature is {temperature} and the feels like {feels_like}")
+                    
+            elif "movie" in task:
+                movies_imdb = imdb.IMDb()
+                speak("What is the name of the movie?")
+                text = take_command()
+                movies = movies_imdb.search_movie(text)
+                speak(f"Searching...")
+                speak(f"This is what I found for {text}")
+
+                if movies:
+                    for movie in movies[:1]:  
+                        title = movie.get("title", "Title not available")
+                        year = movie.get("year", "Year not available")
+                        speak(f"{title} ({year})")
+
+                        # Get detailed information about the movie
+                        info = movie.getID()
+                        movie_info = movies_imdb.get_movie(info)
+
+                        # Safely get fields with default values
+                        rating = movie_info.get("rating", "Rating not available")
+                        cast = movie_info.get("cast", [])[:5]
+                        plot = movie_info.get("plot outline", "Plot summary not available")
+
+                        # Extract actor names if cast is available
+                        actor_names = ", ".join(actor["name"] for actor in cast) if cast else "Cast information not available"
+                        speak(f"Rating: {rating}")
+                        speak(f"The cast of the movie includes: {actor_names}")
+                        speak(f"The plot summary of the movie is: {plot}")
+                else:
+                    speak(f"Sorry, I couldn't find any movie titled {text}.")
+                    
+            elif "calculate" in task:
+                app_id=config("APP_ID")
+                client = wolframalpha.Client(app_id)
+                ind=task.lower().split().index('calculate')
+                text=task.split()[ind+1:]
+                result=client.query(''.join(text))
+                try:
+                    ans=next(result.results).text
+                    speak("The answer is "+ans)
+                    print("The answer is "+ans)
+                except StopIteration:
+                    speak("No results")
+                    speak("please try again")
+                    
+            elif "what is" in task or "who is" in task or "where is" in task:
+                app_id = config("APP_ID")
+                client = wolframalpha.Client(app_id)
+
+                try:
+                    
+                    if "what is" in task:
+                        query = task.lower().split("what is", 1)[1].strip()
+                    elif "who is" in task:
+                        query = task.lower().split("who is", 1)[1].strip()
+                    elif "where is" in task:
+                        query = task.lower().split("where is", 1)[1].strip()
+                    else:
+                        query = None
+
+                    if query:                        
+                        result = client.query(query)
+                        ans = next(result.results).text
+                        speak("The answer is " + ans)
+                        print("The answer is " + ans)
+                    else:
+                        speak("I am not sure what you are asking.")
+                except StopIteration:
+                    speak("No results found. Please try again.")
+                except Exception as e:
+                    speak("Something went wrong. Please try again.")
+                    print(f"Error: {e}")
+
+
             
             elif "ip" in task:
                 print("Your IP address is:", find_my_ip())
