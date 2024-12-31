@@ -41,8 +41,9 @@ The **Personal AI Assistant** is a versatile, voice-controlled program designed 
    USER="<Your Name>"
    BOT="<Bot Name>"
    EMAIL="<Your Email Address>"
-   PASSWORD="<Your Email Password>"
-   NEWS_API_KEY="<Your News API Key>"
+   PASSWORD="<Your Email passkey !!>"
+   NEWS="<Your News API Key>"
+   WEATHER="<Your WEATHER API Key>"
    APP_ID="<Your WolframAlpha App ID>"
    ```
 
