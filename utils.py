@@ -1,3 +1,4 @@
+
 import requests
 import wikipedia
 import pywhatkit as kit
@@ -12,21 +13,17 @@ import os
 
 
 
-def speak(text):
-    tts = gtts.gTTS(text=text, lang='en')
-    tts.save("audio.wav")
-    
-    audio = AudioSegment.from_mp3("audio.wav")
-    os.remove("audio.wav")
-    audio=audio.speedup(playback_speed=1.5)
-    
-    play(audio)
 
-
+# Function to find your IP address
 def find_my_ip():
-    ip_address = requests.get(IP_URL).json()
-    return ip_address["ip"]
+    try:
+        ip_address = requests.get(IP_URL).json()
+        return ip_address["ip"]
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
+# Function to search on Wikipedia
 def search_on_wikipedia(query):
     try:
         results = wikipedia.summary(query, sentences=2)
@@ -34,38 +31,41 @@ def search_on_wikipedia(query):
     except wikipedia.exceptions.DisambiguationError as e:
         return str(e.options)
     
+# Function to search on Google
 def search_on_google(query):
     kit.search(query)
     
+# Function to play a YouTube video
 def youtube(video):
     kit.playonyt(video)
     
+# Function to send an email
 def send_email(receiver, subject, message):
-    if EMAIL=="" or PASSWORD=="":
+    if not EMAIL or not PASSWORD:
         return False
     try:
-        email=EmailMessage()
-        email['To']=receiver
-        email['Subject']=subject
-        email['From']=EMAIL
-        
+        email = EmailMessage()
+        email['To'] = receiver
+        email['Subject'] = subject
+        email['From'] = EMAIL
         email.set_content(message)
-        server=smtplib.SMTP(SMTP_URL,SMTP_PORT)
-        server.starttls()
-        server.login(EMAIL, PASSWORD)
-        server.send_message(email)
-        server.close()
+        
+        with smtplib.SMTP(SMTP_URL, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL, PASSWORD)
+            server.send_message(email)
+        
         return True
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
         return False
     
+# Function to get news headlines
 def get_news():
     news_headlines = []
-    url = NEWS_URL
     try:
         result = requests.get(
-            url,
+            NEWS_URL,
             params={
                 "apiKey": NEWS,
                 "q": "business",
@@ -73,29 +73,32 @@ def get_news():
                 "category": "technology"
             }
         ).json() 
-        articles = result["results"]
+        articles = result.get("results", [])
         for article in articles:
             news_headlines.append(article["title"])
         return news_headlines[:4]
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
         return news_headlines
 
-
+# Function to get weather forecast for a city
 def weather_forecast(city):
-    url = WEATHER_URL
     try:
         result = requests.get(
-            url,
+            WEATHER_URL,
             params={
                 "appid": WEATHER,
                 "q": city,
             }
         ).json()
-        weather = result["weather"][0]["main"]
-        temperature = result["main"]["temp"]
-        feels_like = result["main"]["feels_like"]
-        return weather, f"{temperature}°C", f"{feels_like}°C"
+        
+        weather = result.get("weather", [{}])[0].get("main")
+        temperature = result.get("main", {}).get("temp")
+        feels_like = result.get("main", {}).get("feels_like")
+        
+        if weather and temperature is not None and feels_like is not None:
+            return weather, f"{temperature}°C", f"{feels_like}°C"
+        return None, None, None
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
         return None, None, None

@@ -30,7 +30,7 @@ SCREEN_WIDTH = Config.getint('graphics', 'width')
 SCREEN_HEIGHT = Config.getint('graphics', 'height')
 
 
-farewell_text={
+farewell_text=[
     "Goodbye! Take care and see you soon.",
 "Farewell! Stay safe and have a great day ahead.",
 "Signing off now. Until next time!",
@@ -51,5 +51,11 @@ farewell_text={
 "Later, alligator! Stay cool.",
 "Catch you later! Wishing you the best.",
 "Goodbye, my friend. Until we meet again.",
-}
+]
+
+random_responses = [
+        "I'm doing well, how about you?",
+        "I'm here to assist you!",
+        "Let's get started with your request."
+    ]
 
