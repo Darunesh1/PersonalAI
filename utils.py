@@ -14,10 +14,10 @@ import os
 
 def speak(text):
     tts = gtts.gTTS(text=text, lang='en')
-    tts.save("audio.mp3")
+    tts.save("audio.wav")
     
-    audio = AudioSegment.from_mp3("audio.mp3")
-    os.remove("audio.mp3")
+    audio = AudioSegment.from_mp3("audio.wav")
+    os.remove("audio.wav")
     audio=audio.speedup(playback_speed=1.5)
     
     play(audio)
