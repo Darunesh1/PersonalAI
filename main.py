@@ -11,7 +11,7 @@ import os
 import subprocess as sp
 import imdb
 
-from online import find_my_ip, get_news, search_on_google, search_on_wikipedia, send_email, weather_forecast, youtube
+from utils import find_my_ip, get_news, search_on_google, search_on_wikipedia, send_email, weather_forecast, youtube
 
 engine = pyttsx3.init("sapi5")
 
