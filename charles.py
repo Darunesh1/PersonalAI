@@ -14,9 +14,13 @@ import webbrowser
 import imdb
 from kivy.uix import widget,image,label,boxlayout,textinput
 from kivy import clock
-from conv import HOSTNAME, SCREEN_WIDTH,SCREEN_HEIGHT,farewell_text
+from conv import GEMINI_KEY, HOSTNAME, SCREEN_WIDTH,SCREEN_HEIGHT,farewell_text
 from charles_button import CharlesButton
 from utils import find_my_ip, get_news, search_on_google, search_on_wikipedia, send_email, weather_forecast, youtube
+import google.generativeai as genai
+
+genai.configure(api_key=GEMINI_KEY)
+model=genai.GenerativeModel('gemini-1.5-flash')
 
 class Charles(widget.Widget):
     def __init__(self,**kwargs):
@@ -223,6 +227,14 @@ class Charles(widget.Widget):
         self.speak(choice(farewell_text))
         self.speak(f"This is {HOSTNAME} signing off")
         exit()
+        
+    def get_gemini_response(self,task):
+        try:
+            response=model.generate_content(task)
+            return response            
+        except Exception as e:
+            print(f"Error: {e}")
+            return "I am sorry"
             
     def handle_charles_commands(self, task):
         try:
@@ -245,7 +257,21 @@ class Charles(widget.Widget):
             elif "stop" in task or "exit" in task or "bye" in task:
                 self.farewell()
             else:
-                self.speak(choice(random_text))
+                response = self.get_gemini_response(task)
+
+                # Access the 'candidates' and extract the 'text' from the first candidate
+                response_text = response.candidates[0].content.parts[0].text
+
+                # Replace "*" if necessary
+                response_text = response_text.replace("*", "")
+                
+                print(response)
+
+
+                
+                if response and response !="I am sorry":
+                    self.speak(response)
+                    
         except Exception as e:
             print(f"Error: {e}")
 

@@ -16,6 +16,7 @@ PASSWORD = os.environ.get("PASSWORD")
 NEWS = os.environ.get("NEWS")
 WEATHER = os.environ.get("WEATHER")
 APP_ID = os.environ.get("APP_ID")
+GEMINI_KEY = os.environ.get("GEMINI_KEY")
 
 IP_URL='https://api.ipify.org?format=json'
 
