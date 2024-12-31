@@ -171,3 +171,9 @@ cython_debug/
 .pypirc
 news_headlines.txt
 weather_forecast.txt
+.vscode/settings.json
+static/border.eps.png
+static/circle.png
+static/dusri.ttf
+static/mw.ttf
+static/teesri.otf

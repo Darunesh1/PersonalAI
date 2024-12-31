@@ -19,6 +19,24 @@ The **Personal AI Assistant** is a versatile, voice-controlled program designed 
 
 ## Installation
 
+***Note**: It has been observed that the `siap5` sound module doesn't work well on Linux systems. For better performance and compatibility, it's recommended to use alternative sound modules like **`pyaudio`** or **`sounddevice`** for voice recognition and audio tasks.
+
+### Recommended Alternatives:
+
+1. **[pyaudio](https://pypi.org/project/PyAudio/)** - A popular Python library for working with audio, ideal for voice recognition tasks. You can install it using `pip install pyaudio`.
+
+2. **[sounddevice](https://python-sounddevice.readthedocs.io/)** - A simple and easy-to-use library for playing and recording sound, compatible with Linux. Install it with `pip install sounddevice`.
+
+Additionally, for fetching news and weather data, here are some useful APIs:
+
+1. **[Newsdata.io](https://newsdata.io/documentation)** - A reliable API for fetching news from various sources. You can find more details and create an API key [here](https://newsdata.io/documentation).
+   
+2. **[OpenWeatherMap](https://openweathermap.org/api)** - Provides accurate weather data. You can create an API key [here](https://openweathermap.org/api).
+
+By using these alternatives and APIs, you can seamlessly integrate voice recognition and data fetching tasks into your application with better support across different platforms.
+
+
+
 1. Clone the repository:
    ```bash
    git clone <repository_url>
@@ -96,3 +114,14 @@ Contributions are welcome! Follow these steps to contribute:
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+
+**Note**: An experimental version with a GUI is available in the development branch. Please use it at your own discretion, as it may not be fully stable.
+
+
+
+
+
+
+
+
